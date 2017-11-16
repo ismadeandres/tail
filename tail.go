@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"syscall"
 	"time"
+	"strconv"
 )
 
 const (
@@ -28,14 +29,14 @@ func (t *Tail) String() string {
 
 // begins tailing a linux file. Output stream is
 // made available through `Tail.Lines` channel
-func TailFile(filepath string, buffersize int) (*Tail, error) {
+func TailFile(filepath string, buffersize int, numLines int) (*Tail, error) {
 	// check whether the file exists
 	_, err := os.Stat(filepath)
 	if err != nil {
 		return nil, err
 	}
 
-	cmd := exec.Command("tail", "-c", "+1", "-f", filepath)
+	cmd := exec.Command("tail", "-n", strconv.Itoa(numLines),  "-f", filepath)
 	reader, err := cmd.StdoutPipe()
 	if err != nil {
 		return nil, err
